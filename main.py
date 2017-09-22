@@ -1,5 +1,6 @@
 import random
-
+import pygame
+import sys
 abeceda = "ABCČDEFGHIJKLMNOPRSŠTUVZŽ"
 def preveriZnak(ime,stevec = []):#ŽL-Preverjanje znakov v stringu abeceda
     for i in range(len(ime)):
@@ -25,9 +26,8 @@ def izracun(podobnost,stevecFant, stevecPunca):
                 podobnost = podobnost - stevecFant[i]
             elif((stevecPunca[i] > 0) and (stevecFant == 0)):#ŽL-znaki se pojavijo le pri punci
                 podobnost = podobnost - stevecPunca[i]
-
-        if(podobnost > 100):#ŽL-varovalka, da ne presežemo 100%
-            podobnost = 100
+            if(podobnost > 100):
+                podobnost = 100
     return podobnost
 def main():
     stevecFant = []
@@ -39,9 +39,33 @@ def main():
     imePunca = input("Vnesi ime punce: \n")
     preveriZnak(imeFant,stevecFant)
     preveriZnak(imePunca,stevecPunca)
-    podobnost = int(round((len(imeFant)+len(imePunca)) * random.uniform(1,2)))
+    podobnost = int(round((len(imeFant) + len(imePunca)) * random.uniform(1, 2)))
     print(izracun(podobnost,stevecFant,stevecPunca))
+    besedilo = "Vajina ljubezen je: " + str(izracun(podobnost,stevecFant,stevecPunca)) + "%"#ŽL-int v string
+    #ŽL-PyGame knjižnica za izris grafa
+    pygame.init()
+    ozadje = (203, 218, 242)
+    velikost = sirina, dolzina, = 600,300
+    okno = pygame.display.set_mode((velikost))
+    pygame.display.set_caption("Love Meter")
+    okno.fill(ozadje)
+    pisava = pygame.font.SysFont("comicsans", 60)
+    tekst = pisava.render(besedilo,1,(239, 11, 7))
+    ime1 = pisava.render(imeFant,1,(239,11,7))
+    ime2 = pisava.render(imePunca,1,(239,11,7))
+    ura = pygame.time.Clock()
+    pygame.display.update()
+    while 1:
+        ura.tick(70)
+        events = pygame.event.get()
+        okno.blit(tekst,(85,230))
+        okno.blit(ime1,(85,100))
+        okno.blit(ime2, (310, 100))
+        pygame.display.update()
+        for event in events:
+            if event.type == pygame.QUIT:
+                sys.exit()
 
-
+    pygame.display.update()
 if __name__ == "__main__":
     main()
